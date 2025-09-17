@@ -55,32 +55,136 @@ This project modernizes casjay's Stiqued fork (based on the original Stikked pas
 - [ ] **CSRF Protection**: Implement CodeIgniter's CSRF tokens
 - [ ] **Input Sanitization**: Review and update all user input handling
 - [ ] **SQL Injection Prevention**: Ensure all queries use prepared statements
+- [ ] **Pretty URLs**: Implement clean URLs without web server rewriting dependency
+
+#### Pretty URLs Implementation (No Web Server Rewriting Required):
+- [ ] **CodeIgniter URI Routing**: Use `application/config/routes.php` for clean URLs
+- [ ] **Index.php Method**: Keep `index.php` in URLs but make them clean
+- [ ] **Fallback Support**: Ensure compatibility with all web servers
+
+```php
+// htdocs/application/config/routes.php
+$route['view/(:any)'] = 'main/view/$1';
+$route['view/(:any)/(:any)'] = 'main/view/$1/$2';
+$route['raw/(:any)'] = 'main/view_raw/$1';
+$route['download/(:any)'] = 'main/download/$1';
+$route['embed/(:any)'] = 'main/embed/$1';
+$route['diff/(:any)'] = 'main/view/$1/diff';
+$route['api'] = 'api/create';
+$route['api/create'] = 'api/create';
+$route['api/show/(:any)'] = 'api/show/$1';
+$route['trends'] = 'main/trends';
+$route['lists'] = 'main/lists';
+$route['lists/rss'] = 'main/rss';
+$route['archive'] = 'main/archive';
+$route['about'] = 'main/about';
+$route['404_override'] = '';
+$route['translate_uri_dashes'] = FALSE;
+
+// Pretty URL Examples (with index.php):
+// yoursite.com/index.php/view/abc123
+// yoursite.com/index.php/raw/abc123  
+// yoursite.com/index.php/trends
+// yoursite.com/index.php/api/create
+```
+
+```php
+// htdocs/application/config/config.php
+// Enable query strings for compatibility
+$config['enable_query_strings'] = TRUE;
+$config['controller_trigger'] = 'c';
+$config['function_trigger'] = 'm';
+$config['directory_trigger'] = 'd';
+
+// Allow both URI protocols
+$config['uri_protocol'] = 'REQUEST_URI';
+$config['url_suffix'] = '';
+$config['language'] = 'english';
+$config['charset'] = 'UTF-8';
+```
 
 ### 2. Mobile-First Responsive Theme System (Priority: High)
-**Target**: All themes converted to mobile-first with modern dark/light mode
+**Target**: Convert ALL existing themes to mobile-first while preserving their unique visual identity
 
-#### Current Theme Analysis:
+#### Current Theme Inventory (All to be preserved & converted):
 ```
 /htdocs/themes/
-├── default/           # Basic theme
-├── bootstrap/         # Bootstrap 3.x based
-├── gabdark/          # Dark theme (not responsive)
-├── i386/             # Terminal-style theme
-├── stikkedizr/       # Custom theme
-├── cleanwhite/       # Clean light theme  
-├── snowkat/          # Custom theme
-└── geocities/        # Retro 90s theme
+├── default/           # Base theme - PRIMARY TEMPLATE for theming system
+├── bootstrap/         # Bootstrap 3.x based - convert to Bootstrap 5
+├── gabdark/          # Dark theme (not responsive) - preserve dark aesthetic
+├── gabdark3/         # Alternative dark theme - preserve unique style
+├── i386/             # Terminal-style theme - preserve retro terminal look
+├── stikkedizr/       # Custom theme - preserve visual identity
+├── cleanwhite/       # Clean light theme - preserve minimalist design  
+├── snowkat/          # Custom theme - preserve unique styling
+└── geocities/        # Retro 90s theme - preserve nostalgic 90s aesthetic
 ```
 
-#### Modern Theme Implementation Strategy:
+#### Theme Conversion Strategy:
 
-##### A. CSS Framework Upgrade:
-- [ ] **Bootstrap 5.3+**: Upgrade from Bootstrap 3.x
+##### A. Default Theme as Master Template:
+- [ ] **Primary Focus**: Default theme becomes the master template for the theming system
+- [ ] **Theming Architecture**: Implement modern CSS custom properties in default theme
+- [ ] **Reference Implementation**: All other themes will follow default theme's responsive patterns
+- [ ] **Bootstrap 5.3+**: Upgrade default theme from Bootstrap 3.x
   - Remove jQuery dependency (Bootstrap 5 is vanilla JS)
   - Update grid system (Bootstrap 5 uses CSS Grid + Flexbox)
   - Implement utility-first approach
 
-##### B. Mobile-First Responsive Design:
+##### B. Preserve Visual Identity:
+- [ ] **Keep Unique Aesthetics**: Each theme retains its distinctive look and feel
+- [ ] **Mobile-First Conversion**: Convert layouts to responsive while preserving visual character
+- [ ] **No Design Changes**: Only make responsive, don't alter the visual design language
+
+##### C. Individual Theme Conversion Plan:
+
+**1. Default Theme (Master Template)**:
+- [ ] Complete responsive overhaul with CSS custom properties
+- [ ] Modern dark/light theme toggle system
+- [ ] Bootstrap 5 integration as foundation
+- [ ] Mobile-first breakpoints and layouts
+
+**2. Bootstrap Theme**:
+- [ ] Upgrade from Bootstrap 3.x to 5.x framework
+- [ ] Maintain Bootstrap's visual design language
+- [ ] Convert to mobile-first grid system
+- [ ] Preserve existing component styling
+
+**3. gabdark & gabdark3 Themes**:
+- [ ] Keep existing dark color schemes intact
+- [ ] Make layouts responsive while preserving dark aesthetic
+- [ ] Ensure readability on mobile devices
+- [ ] Maintain current dark theme character
+
+**4. i386 Theme**:
+- [ ] Preserve terminal/console aesthetic completely
+- [ ] Make terminal-style layouts mobile-friendly
+- [ ] Ensure monospace fonts work on mobile
+- [ ] Keep retro computing visual identity
+
+**5. stikkedizr Theme**:
+- [ ] Analyze current custom styling
+- [ ] Convert layout to responsive while keeping unique design
+- [ ] Preserve custom visual elements
+- [ ] Maintain theme's distinctive character
+
+**6. cleanwhite Theme**:
+- [ ] Keep minimalist, clean design approach
+- [ ] Make white/light layouts mobile-optimized
+- [ ] Preserve clean typography and spacing
+- [ ] Maintain current aesthetic philosophy
+
+**7. snowkat Theme**:
+- [ ] Preserve unique custom styling
+- [ ] Convert to responsive layout patterns
+- [ ] Keep theme's distinctive visual elements
+- [ ] Maintain current design identity
+
+**8. geocities Theme**:
+- [ ] **Preserve 90s nostalgic aesthetic completely**
+- [ ] Make retro layouts mobile-responsive (challenging but important)
+- [ ] Ensure 90s design elements work on mobile
+- [ ] Keep the intentionally retro/nostalgic visual style
 ```css
 /* Mobile First Breakpoint Strategy */
 /* Base styles: Mobile (320px+) */
@@ -114,11 +218,12 @@ This project modernizes casjay's Stiqued fork (based on the original Stikked pas
 }
 ```
 
-##### C. Modern Dark/Light Theme System:
+##### D. Mobile-First Responsive Design Implementation:
+##### E. Modern Dark/Light Theme System (Default Theme Only):
 **Implementation**: CSS Custom Properties + `light-dark()` function (2024 standard)
 
 ```css
-/* Modern Theme Variables */
+/* Applied ONLY to Default Theme */
 :root {
   color-scheme: light dark;
   
@@ -147,7 +252,7 @@ This project modernizes casjay's Stiqued fork (based on the original Stikked pas
   --syntax-number: light-dark(#005cc5, #4dabf7);
 }
 
-/* Theme Toggle Support */
+/* Theme Toggle Support for Default Theme */
 [data-theme="light"] {
   color-scheme: light;
 }
@@ -156,7 +261,7 @@ This project modernizes casjay's Stiqued fork (based on the original Stikked pas
   color-scheme: dark;
 }
 
-/* Apply Variables */
+/* Apply Variables in Default Theme */
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -168,7 +273,9 @@ body {
 }
 ```
 
-##### D. Enhanced Mobile Features:
+**Note**: Other themes (gabdark, i386, geocities, etc.) keep their existing color schemes and visual identity unchanged.
+
+##### F. Enhanced Mobile Features:
 - [ ] **Touch-Friendly Interface**:
   - Minimum 44px tap targets
   - Swipe gestures for theme switching
@@ -348,16 +455,17 @@ done
   - Update database configuration to mysqli
   - Replace deprecated functions
 
-#### Week 2: Database & Security
+#### Week 2: Database & Security + Pretty URLs
 - [ ] **Day 8-10**: Database Layer Modernization
   - Implement prepared statements
   - Update all database queries
   - Add connection error handling
 
-- [ ] **Day 11-14**: Security Enhancements
+- [ ] **Day 11-14**: Security & URL Improvements
   - Implement CSRF protection
   - Update password hashing
   - Review input sanitization
+  - **Implement pretty URLs using CodeIgniter routing**
   - Security testing across PHP versions
 
 ### Phase 2: Theme System Overhaul (Weeks 3-4)
@@ -374,17 +482,17 @@ done
   - Create theme toggle functionality
   - Add localStorage persistence
 
-#### Week 4: Mobile-First Conversion
-- [ ] **Day 22-24**: Responsive Base Layouts
-  - Convert all themes to mobile-first
-  - Implement responsive navigation
-  - Update grid systems
+#### Week 4: Theme Conversion & Mobile-First Implementation
+- [ ] **Day 22-24**: Convert Existing Themes to Mobile-First
+  - Convert each theme individually to responsive
+  - Preserve unique visual identity of each theme
+  - Test responsive behavior across devices
 
-- [ ] **Day 25-28**: Mobile Optimizations
-  - Touch-friendly interfaces
-  - Optimized syntax highlighting
-  - Performance improvements
-  - Accessibility enhancements
+- [ ] **Day 25-28**: Theme-Specific Optimizations
+  - Optimize syntax highlighting for mobile per theme
+  - Ensure each theme works well on touch devices
+  - Performance improvements per theme
+  - Accessibility enhancements while preserving aesthetics
 
 ### Phase 3: Advanced Features & Polish (Weeks 5-6)
 
@@ -455,88 +563,123 @@ done
 - **Core Web Vitals**: All metrics in "Good" range
 - **Lighthouse Score**: 90+ for Performance, Accessibility, Best Practices
 
-## File Structure (Modernized)
+## File Structure (Correct Stiqued Layout)
+
+**Important**: All server components are under `htdocs/` as per the original Stikked/Stiqued architecture.
 
 ```
 /stiqued-modern/
-├── application/
-│   ├── config/
-│   │   ├── stiqued.php          # Main config
-│   │   ├── database.php         # DB config with mysqli
-│   │   └── routes.php           # URL routing
-│   ├── controllers/
-│   │   ├── Main.php             # Main controller
-│   │   ├── Api.php              # API endpoints
-│   │   └── Admin.php            # Admin interface
-│   ├── models/
-│   │   ├── Paste_model.php      # Paste operations
-│   │   └── User_model.php       # User management
-│   ├── views/
-│   │   ├── templates/           # Base templates
-│   │   └── themes/              # Theme-specific views
-│   └── libraries/
-│       ├── Carabiner.php        # Fixed for PHP 8+
-│       └── Encryption.php       # Updated encryption
-├── htdocs/
-│   ├── themes/
+├── htdocs/                      # Web server document root
+│   ├── application/             # CodeIgniter application
+│   │   ├── config/
+│   │   │   ├── stikked.php      # Main config (note: not stiqued.php)
+│   │   │   ├── database.php     # DB config with mysqli
+│   │   │   ├── config.php       # CodeIgniter config
+│   │   │   └── routes.php       # URL routing
+│   │   ├── controllers/
+│   │   │   ├── Main.php         # Main controller
+│   │   │   ├── Api.php          # API endpoints
+│   │   │   └── Admin.php        # Admin interface
+│   │   ├── models/
+│   │   │   ├── Paste_model.php  # Paste operations
+│   │   │   └── User_model.php   # User management
+│   │   ├── views/
+│   │   │   ├── templates/       # Base templates
+│   │   │   └── themes/          # Theme-specific views
+│   │   └── libraries/
+│   │       ├── Carabiner.php    # Fixed for PHP 8+
+│   │       └── Encryption.php   # Updated encryption
+│   ├── system/                  # CodeIgniter system files
+│   │   ├── core/
+│   │   ├── libraries/
+│   │   ├── helpers/
+│   │   └── database/
+│   ├── themes/                  # Theme assets and templates
 │   │   ├── default/
 │   │   │   ├── css/
 │   │   │   │   ├── main.css     # Mobile-first styles
-│   │   │   │   ├── dark.css     # Dark theme variables
-│   │   │   │   └── light.css    # Light theme variables
+│   │   │   │   └── theme-vars.css # CSS custom properties
 │   │   │   ├── js/
 │   │   │   │   ├── theme-toggle.js  # Theme switching
 │   │   │   │   └── mobile.js        # Mobile enhancements
+│   │   │   ├── images/          # Theme images
 │   │   │   └── views/           # Theme templates
-│   │   ├── bootstrap/           # Bootstrap 5 based
+│   │   ├── bootstrap/           # Bootstrap 5 based theme
 │   │   ├── gabdark/            # Modernized dark theme
+│   │   ├── gabdark3/           # Alternative dark theme
 │   │   ├── i386/               # Terminal theme (responsive)
 │   │   ├── stikkedizr/         # Custom responsive theme
 │   │   ├── cleanwhite/         # Clean light theme
 │   │   ├── snowkat/            # Custom responsive theme
 │   │   └── geocities/          # Retro theme (responsive)
-│   ├── assets/
+│   ├── static/                  # Static assets
+│   │   ├── asset/              # Minified assets (writable)
 │   │   ├── css/
 │   │   │   ├── bootstrap.min.css    # Bootstrap 5
-│   │   │   ├── themes.css           # Global theme system
-│   │   │   └── mobile.css           # Mobile optimizations
+│   │   │   ├── global-themes.css    # Global theme system
+│   │   │   └── mobile-base.css      # Mobile base styles
 │   │   ├── js/
 │   │   │   ├── bootstrap.bundle.min.js  # Bootstrap 5 JS
 │   │   │   ├── highlight.min.js         # Syntax highlighting
+│   │   │   ├── codemirror/             # CodeMirror editor
 │   │   │   └── app.js                   # Main application JS
 │   │   └── img/
-│   └── index.php                # Entry point
-├── docker/
-│   ├── php7.0/Dockerfile
-│   ├── php7.1/Dockerfile
-│   ├── php7.2/Dockerfile
-│   ├── php7.3/Dockerfile
-│   ├── php7.4/Dockerfile
-│   ├── php8.0/Dockerfile
-│   ├── php8.1/Dockerfile
-│   ├── php8.2/Dockerfile
-│   ├── php8.3/Dockerfile
-│   └── nginx.conf
-├── tests/
-│   ├── php-compatibility/       # PHP version tests
-│   ├── responsive/              # Mobile/responsive tests
-│   └── themes/                  # Theme functionality tests
-├── docs/
+│   │       ├── icons/           # Application icons
+│   │       └── qr/              # QR code images
+│   ├── .htaccess               # Apache rewrite rules
+│   └── index.php               # Application entry point
+├── docker/                     # Docker configuration
+│   ├── php7.0/
+│   │   └── Dockerfile
+│   ├── php7.1/
+│   │   └── Dockerfile
+│   ├── php7.2/
+│   │   └── Dockerfile
+│   ├── php7.3/
+│   │   └── Dockerfile
+│   ├── php7.4/
+│   │   └── Dockerfile
+│   ├── php8.0/
+│   │   └── Dockerfile
+│   ├── php8.1/
+│   │   └── Dockerfile
+│   ├── php8.2/
+│   │   └── Dockerfile
+│   ├── php8.3/
+│   │   └── Dockerfile
+│   ├── nginx.conf
+│   └── stiqued.php             # Docker-specific config
+├── tests/                      # Testing framework
+│   ├── php-compatibility/      # PHP version tests
+│   ├── responsive/             # Mobile/responsive tests
+│   └── themes/                 # Theme functionality tests
+├── doc/                        # Documentation
 │   ├── INSTALLATION.md
-│   ├── THEMING.md
-│   ├── API.md
-│   └── MIGRATION.md
-├── docker-compose.yml
-├── test-all-versions.sh
-└── README.md
+│   ├── CREATING_THEMES.md      # Theme development guide
+│   ├── TRANSLATING_STIQUED.md  # Translation guide
+│   ├── TROUBLESHOOTING.md      # Troubleshooting guide
+│   └── MIGRATION.md            # Upgrade guide
+├── docker-compose.yml          # Docker orchestration
+├── test-all-versions.sh        # PHP version testing script
+└── README.md                   # Project documentation
 ```
+
+### Key Structure Notes:
+- **`htdocs/`** is the web server document root containing all PHP files
+- **`htdocs/application/`** contains the CodeIgniter application logic
+- **`htdocs/system/`** contains CodeIgniter framework files
+- **`htdocs/themes/`** contains all theme assets and templates
+- **`htdocs/static/`** contains shared static assets (CSS, JS, images)
+- **Config file** is `htdocs/application/config/stikked.php` (not stiqued.php)
+- **Assets minification** uses the `static/asset/` writable directory
 
 ## Success Criteria
 
 ### Functional Requirements:
 - [ ] All features work flawlessly on PHP 7.0 through 8.3
 - [ ] All themes are fully responsive and mobile-optimized
-- [ ] Dark/Light mode toggle works across all themes
+- [ ] Dark/Light mode toggle works in default theme
+- [ ] **Pretty URLs work without web server configuration**
 - [ ] No deprecated function usage
 - [ ] Backward compatibility maintained for existing pastes
 - [ ] All security vulnerabilities addressed
@@ -577,18 +720,559 @@ tar -czf custom_themes_backup.tar.gz htdocs/themes/
 5. **Test**: Verify all functionality works
 6. **Themes**: Re-apply custom theme modifications
 
-## Additional Features for Future Consideration
+## Additional Pretty URLs Implementation Details
 
-### Phase 5 (Optional Extensions):
-- [ ] **API v2**: RESTful API with authentication
-- [ ] **Plugin System**: Extensible architecture
-- [ ] **Advanced Themes**: More theme options
-- [ ] **Performance**: Redis caching, CDN support
-- [ ] **Analytics**: Usage statistics and monitoring
-- [ ] **Social Features**: User profiles, favorites
-- [ ] **Advanced Security**: 2FA, rate limiting
-- [ ] **Mobile App**: PWA or native app
-- [ ] **Collaboration**: Real-time editing, comments
+### CodeIgniter-Based Pretty URLs (No Web Server Config Required)
+
+#### Advantages of This Approach:
+- ✅ **Works on any web server** (Apache, Nginx, IIS, LiteSpeed)
+- ✅ **No .htaccess required** - pure PHP solution
+- ✅ **No mod_rewrite dependency** - works on shared hosting
+- ✅ **Backward compatible** - existing URLs still work
+- ✅ **Easy to maintain** - all routing in one PHP file
+
+#### URL Structure Examples:
+```
+// Current URLs (still work):
+yoursite.com/index.php?c=main&m=view&paste_id=abc123
+yoursite.com/?c=main&m=view&paste_id=abc123
+
+// New Pretty URLs (with index.php):
+yoursite.com/index.php/view/abc123
+yoursite.com/index.php/raw/abc123
+yoursite.com/index.php/trends
+yoursite.com/index.php/api/create
+
+// Optional: Even prettier (if web server supports it):
+yoursite.com/view/abc123  # Works if .htaccess available
+yoursite.com/raw/abc123   # Falls back to index.php method
+```
+
+#### Implementation in Controllers:
+```php
+// htdocs/application/controllers/Main.php
+public function view($paste_id = '', $action = '') 
+{
+    // Handle both old and new URL formats
+    if (empty($paste_id)) {
+        $paste_id = $this->input->get('paste_id');
+    }
+    
+    if ($action === 'diff') {
+        return $this->view_diff($paste_id);
+    }
+    
+    // Existing view logic...
+}
+
+public function view_raw($paste_id = '')
+{
+    if (empty($paste_id)) {
+        $paste_id = $this->input->get('paste_id');
+    }
+    
+    // Existing raw view logic...
+}
+```
+
+#### Helper Functions for URL Generation:
+```php
+// htdocs/application/helpers/stikked_helper.php
+if (!function_exists('paste_url')) {
+    function paste_url($paste_id, $action = '') {
+        $CI =& get_instance();
+        
+        if ($action) {
+            return base_url("index.php/{$action}/{$paste_id}");
+        }
+        
+        return base_url("index.php/view/{$paste_id}");
+    }
+}
+
+if (!function_exists('api_url')) {
+    function api_url($endpoint = '') {
+        if ($endpoint) {
+            return base_url("index.php/api/{$endpoint}");
+        }
+        
+        return base_url("index.php/api");
+    }
+}
+```
+
+#### Graceful Degradation:
+```php
+// htdocs/application/config/config.php
+// Detect if pretty URLs are supported
+$config['index_page'] = 'index.php';
+
+// Auto-detect URL rewriting capability
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'index.php') === FALSE) {
+    // If server supports URL rewriting, hide index.php
+    $config['index_page'] = '';
+}
+```
+
+This approach ensures **maximum compatibility** while providing cleaner URLs without requiring any web server configuration!
+
+## Modern Developer Experience Features (Phase 5+)
+
+### 🔧 **Real-time Syntax Validation**
+**Implementation**: Integrate with language-specific linters and parsers
+
+```javascript
+// htdocs/static/js/syntax-validator.js
+class SyntaxValidator {
+    constructor() {
+        this.validators = {
+            'javascript': this.validateJavaScript,
+            'python': this.validatePython,
+            'php': this.validatePHP,
+            'json': this.validateJSON,
+            // Add more languages as needed
+        };
+        
+        this.debounceTimer = null;
+    }
+    
+    validateOnType(editor, language) {
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+            this.validate(editor.getValue(), language);
+        }, 500); // Validate 500ms after user stops typing
+    }
+    
+    validate(code, language) {
+        if (this.validators[language]) {
+            const errors = this.validators[language](code);
+            this.displayErrors(errors);
+        }
+    }
+    
+    validateJavaScript(code) {
+        // Use ESLint or similar for JS validation
+        try {
+            new Function(code); // Basic syntax check
+            return [];
+        } catch (error) {
+            return [{
+                line: error.lineNumber || 1,
+                message: error.message,
+                type: 'error'
+            }];
+        }
+    }
+    
+    validateJSON(code) {
+        try {
+            JSON.parse(code);
+            return [];
+        } catch (error) {
+            return [{
+                line: this.getJSONErrorLine(error.message, code),
+                message: error.message,
+                type: 'error'
+            }];
+        }
+    }
+}
+```
+
+### ✨ **Auto-formatting & Code Beautification**
+**Implementation**: Integrate Prettier, Black (Python), PHP-CS-Fixer, etc.
+
+```javascript
+// htdocs/static/js/code-formatter.js
+class CodeFormatter {
+    constructor() {
+        this.formatters = {
+            'javascript': this.formatJavaScript,
+            'json': this.formatJSON,
+            'html': this.formatHTML,
+            'css': this.formatCSS,
+            'python': this.formatPython,
+            'php': this.formatPHP
+        };
+    }
+    
+    async formatCode(code, language) {
+        if (this.formatters[language]) {
+            return await this.formatters[language](code);
+        }
+        return code; // Return unchanged if no formatter
+    }
+    
+    formatJavaScript(code) {
+        // Use Prettier via CDN or embedded
+        return prettier.format(code, {
+            parser: 'babel',
+            tabWidth: 2,
+            semi: true,
+            singleQuote: true
+        });
+    }
+    
+    formatJSON(code) {
+        try {
+            const parsed = JSON.parse(code);
+            return JSON.stringify(parsed, null, 2);
+        } catch (error) {
+            return code; // Return original if invalid JSON
+        }
+    }
+    
+    formatHTML(code) {
+        // Use js-beautify for HTML
+        return html_beautify(code, {
+            indent_size: 2,
+            wrap_line_length: 120
+        });
+    }
+}
+
+// Integration with existing CodeMirror/ACE editor
+document.addEventListener('DOMContentLoaded', function() {
+    const formatter = new CodeFormatter();
+    const formatButton = document.getElementById('format-code');
+    
+    if (formatButton) {
+        formatButton.addEventListener('click', async function() {
+            const editor = getActiveEditor(); // Get current editor instance
+            const language = getSelectedLanguage();
+            const originalCode = editor.getValue();
+            
+            try {
+                const formattedCode = await formatter.formatCode(originalCode, language);
+                editor.setValue(formattedCode);
+                
+                // Show success feedback
+                showNotification('Code formatted successfully!', 'success');
+            } catch (error) {
+                showNotification('Error formatting code: ' + error.message, 'error');
+            }
+        });
+    }
+});
+```
+
+### 🔄 **Git Integration**
+**Implementation**: GitHub/GitLab API integration for gists and snippets
+
+```php
+// htdocs/application/libraries/Git_integration.php
+<?php
+class Git_integration {
+    
+    private $github_api = 'https://api.github.com';
+    private $gitlab_api = 'https://gitlab.com/api/v4';
+    
+    public function import_github_gist($gist_id, $token = null) {
+        $url = "{$this->github_api}/gists/{$gist_id}";
+        
+        $headers = ['User-Agent: Stiqued-Bot/1.0'];
+        if ($token) {
+            $headers[] = "Authorization: token {$token}";
+        }
+        
+        $response = $this->make_request($url, $headers);
+        
+        if ($response && isset($response['files'])) {
+            $pastes = [];
+            foreach ($response['files'] as $filename => $file) {
+                $pastes[] = [
+                    'title' => $filename,
+                    'content' => $file['content'],
+                    'language' => $this->detect_language($file['language']),
+                    'description' => $response['description'] ?? ''
+                ];
+            }
+            return $pastes;
+        }
+        
+        return false;
+    }
+    
+    public function export_to_github_gist($paste_data, $token, $public = false) {
+        $url = "{$this->github_api}/gists";
+        
+        $gist_data = [
+            'description' => $paste_data['title'] ?? 'Exported from Stiqued',
+            'public' => $public,
+            'files' => [
+                ($paste_data['title'] ?? 'paste') . $this->get_file_extension($paste_data['language']) => [
+                    'content' => $paste_data['content']
+                ]
+            ]
+        ];
+        
+        $headers = [
+            'User-Agent: Stiqued-Bot/1.0',
+            "Authorization: token {$token}",
+            'Content-Type: application/json'
+        ];
+        
+        return $this->make_request($url, $headers, 'POST', json_encode($gist_data));
+    }
+    
+    private function detect_language($github_language) {
+        // Map GitHub language names to Stikked/GeSHi language names
+        $language_map = [
+            'JavaScript' => 'javascript',
+            'Python' => 'python',
+            'PHP' => 'php',
+            'HTML' => 'html',
+            'CSS' => 'css',
+            'Java' => 'java',
+            'C++' => 'cpp',
+            'C' => 'c',
+            'Ruby' => 'ruby',
+            'Go' => 'go',
+            'Rust' => 'rust',
+            'TypeScript' => 'typescript'
+        ];
+        
+        return $language_map[$github_language] ?? 'text';
+    }
+}
+```
+
+### 📊 **Advanced Diff Views**
+**Implementation**: Enhanced diff visualization with multiple view modes
+
+```javascript
+// htdocs/static/js/advanced-diff.js
+class AdvancedDiffViewer {
+    constructor(container) {
+        this.container = container;
+        this.modes = ['side-by-side', 'inline', 'semantic'];
+        this.currentMode = 'side-by-side';
+    }
+    
+    renderDiff(originalText, modifiedText, language) {
+        const diffContainer = document.createElement('div');
+        diffContainer.className = 'advanced-diff-viewer';
+        
+        // Add mode switcher
+        const modeSelector = this.createModeSelector();
+        diffContainer.appendChild(modeSelector);
+        
+        // Render diff based on current mode
+        const diffContent = this.renderDiffContent(originalText, modifiedText, language);
+        diffContainer.appendChild(diffContent);
+        
+        this.container.appendChild(diffContainer);
+    }
+    
+    createModeSelector() {
+        const selector = document.createElement('div');
+        selector.className = 'diff-mode-selector';
+        
+        this.modes.forEach(mode => {
+            const button = document.createElement('button');
+            button.textContent = mode.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            button.className = mode === this.currentMode ? 'active' : '';
+            button.addEventListener('click', () => this.switchMode(mode));
+            selector.appendChild(button);
+        });
+        
+        return selector;
+    }
+    
+    renderSideBySideDiff(original, modified, language) {
+        const container = document.createElement('div');
+        container.className = 'side-by-side-diff';
+        
+        const originalPane = document.createElement('div');
+        originalPane.className = 'diff-pane original';
+        originalPane.innerHTML = this.highlightCode(original, language);
+        
+        const modifiedPane = document.createElement('div');
+        modifiedPane.className = 'diff-pane modified';
+        modifiedPane.innerHTML = this.highlightCode(modified, language);
+        
+        container.appendChild(originalPane);
+        container.appendChild(modifiedPane);
+        
+        return container;
+    }
+    
+    renderInlineDiff(original, modified, language) {
+        const lines = this.generateInlineDiff(original, modified);
+        const container = document.createElement('div');
+        container.className = 'inline-diff';
+        
+        lines.forEach(line => {
+            const lineElement = document.createElement('div');
+            lineElement.className = `diff-line ${line.type}`;
+            lineElement.innerHTML = this.highlightCode(line.content, language);
+            container.appendChild(lineElement);
+        });
+        
+        return container;
+    }
+}
+```
+
+### 👥 **Real-time Collaboration**
+**Implementation**: WebSocket-based collaborative editing
+
+```javascript
+// htdocs/static/js/collaboration.js
+class CollaborativeEditor {
+    constructor(pasteId, userId) {
+        this.pasteId = pasteId;
+        this.userId = userId;
+        this.socket = null;
+        this.collaborators = new Map();
+        this.operations = [];
+    }
+    
+    connect() {
+        // Use Socket.IO or native WebSockets
+        this.socket = new WebSocket(`ws://${location.host}/ws/collaborate/${this.pasteId}`);
+        
+        this.socket.onopen = () => {
+            this.socket.send(JSON.stringify({
+                type: 'join',
+                userId: this.userId,
+                pasteId: this.pasteId
+            }));
+        };
+        
+        this.socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            this.handleMessage(message);
+        };
+    }
+    
+    handleMessage(message) {
+        switch (message.type) {
+            case 'user-joined':
+                this.addCollaborator(message.user);
+                break;
+            case 'user-left':
+                this.removeCollaborator(message.userId);
+                break;
+            case 'operation':
+                this.applyOperation(message.operation);
+                break;
+            case 'cursor-moved':
+                this.updateCollaboratorCursor(message.userId, message.position);
+                break;
+        }
+    }
+    
+    sendOperation(operation) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(JSON.stringify({
+                type: 'operation',
+                operation: operation,
+                userId: this.userId,
+                pasteId: this.pasteId
+            }));
+        }
+    }
+    
+    applyOperation(operation) {
+        // Apply operational transform algorithm
+        const editor = getActiveEditor();
+        
+        // Transform operation against pending operations
+        const transformedOp = this.transformOperation(operation);
+        
+        // Apply to editor
+        editor.getDoc().replaceRange(
+            transformedOp.text,
+            transformedOp.from,
+            transformedOp.to,
+            'collaboration'
+        );
+        
+        // Update collaborator cursors
+        this.updateCursors();
+    }
+}
+```
+
+### 📈 **Version History**
+**Implementation**: Git-like versioning for paste changes
+
+```php
+// htdocs/application/models/Paste_version_model.php
+<?php
+class Paste_version_model extends CI_Model {
+    
+    public function create_version($paste_id, $content, $user_id = null, $message = '') {
+        $previous_version = $this->get_latest_version($paste_id);
+        $version_number = ($previous_version ? $previous_version->version + 1 : 1);
+        
+        // Generate diff from previous version
+        $diff = null;
+        if ($previous_version) {
+            $diff = $this->generate_diff($previous_version->content, $content);
+        }
+        
+        $version_data = [
+            'paste_id' => $paste_id,
+            'version' => $version_number,
+            'content' => $content,
+            'diff' => $diff,
+            'user_id' => $user_id,
+            'message' => $message,
+            'created_at' => date('Y-m-d H:i:s'),
+            'content_hash' => sha1($content)
+        ];
+        
+        return $this->db->insert('paste_versions', $version_data);
+    }
+    
+    public function get_version_history($paste_id, $limit = 50) {
+        return $this->db
+            ->where('paste_id', $paste_id)
+            ->order_by('version', 'DESC')
+            ->limit($limit)
+            ->get('paste_versions')
+            ->result();
+    }
+    
+    public function restore_version($paste_id, $version_number) {
+        $version = $this->db
+            ->where('paste_id', $paste_id)
+            ->where('version', $version_number)
+            ->get('paste_versions')
+            ->row();
+            
+        if ($version) {
+            // Update main paste with version content
+            $this->db
+                ->where('id', $paste_id)
+                ->update('pastes', ['data' => $version->content]);
+                
+            // Create new version entry for the restoration
+            $this->create_version($paste_id, $version->content, null, "Restored to version {$version_number}");
+            
+            return true;
+        }
+        
+        return false;
+    }
+}
+```
+
+These modern developer experience features would make Stiqued incredibly powerful for developers - combining the simplicity of a pastebin with the sophistication of modern IDE features!
+
+### Phase 5 (Modern Developer Experience Extensions):
+- [ ] **Real-time Syntax Validation**: Live error checking for code pastes
+- [ ] **Auto-formatting & Code Beautification**: Automatically format pasted code
+- [ ] **Git Integration**: Import/export from GitHub gists and repositories
+- [ ] **Advanced Diff Views**: Side-by-side, inline, and semantic diff modes
+- [ ] **Collaboration Mode**: Real-time multi-user editing with live cursors
+- [ ] **Version History**: Track paste changes over time with git-like versioning
+- [ ] **Smart Language Detection**: Auto-detect programming language with higher accuracy
+- [ ] **Code Folding**: Collapse/expand functions, classes, and blocks
+- [ ] **Intelligent Auto-complete**: Context-aware code suggestions
+- [ ] **Performance**: Redis caching, CDN support for enhanced speed
 
 ## Notes for Claude Code Implementation
 
@@ -600,20 +1284,19 @@ tar -czf custom_themes_backup.tar.gz htdocs/themes/
 5. **Mobile-first always** - Start with smallest screen, scale up
 
 ### Key Implementation Tips:
-- Use feature detection over browser detection
-- Implement progressive enhancement
-- Prioritize accessibility throughout
-- Test on real devices, not just browser dev tools
-- Consider offline functionality for core features
-- Optimize for slow connections (3G)
+- **Preserve Visual Identity**: Each theme keeps its distinctive character and color schemes
+- **Mobile-First Always**: Start with smallest screen, scale up for each theme individually
+- **Default Theme Focus**: Use default theme as the template for modern theming architecture
+- **No Visual Redesign**: Convert to responsive without changing the aesthetic appeal
+- **Theme Isolation**: Keep theme-specific styles isolated and maintainable
 
 ### Common Pitfalls to Avoid:
 - Don't break existing paste URLs
 - Maintain config file compatibility where possible
-- Ensure theme switching doesn't cause layout shifts
-- Test dark mode in actual dark environments
-- Verify touch targets are adequate size
-- Check color contrast ratios in all themes
+- **Don't change theme visual aesthetics** - only make responsive
+- **Preserve theme character** - i386 should still look terminal-like, geocities should stay retro
+- Verify touch targets are adequate size across all themes
+- Check that each theme's color schemes work well on mobile
+- Test that unique theme features (like i386's terminal styling) work on touch devices
 
-This modernization will transform Stiqued into a contemporary, mobile-first pastebin that works seamlessly across all modern PHP versions while maintaining its core functionality and extending its capabilities for today's web standards.
-
+This modernization will transform Stiqued into a contemporary, mobile-first pastebin that works seamlessly across all modern PHP versions while **preserving each theme's unique visual identity and character**.
